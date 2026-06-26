@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>NewFolder\Arcanum Icon.ico</ApplicationIcon>
+    <AssemblyName>Arcanum</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Icons\**" />
+    <EmbeddedResource Remove="Icons\**" />
+    <None Remove="Icons\**" />
+    <Page Remove="Icons\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="NewFolder\Arcanum Icon.ico" />
+    <None Remove="NewFolder\delta.png" />
+    <None Remove="NewFolder\home-button_9073243.png" />
+    <None Remove="NewFolder\Logo_maker_project__3_-removebg-preview.png" />
+    <None Remove="NewFolder\play_10238942.png" />
+    <None Remove="NewFolder\serial.png" />
+    <None Remove="NewFolder\x.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="NewFolder\Arcanum Icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HelixToolkit" Version="3.1.2" />
+    <PackageReference Include="HelixToolkit.Wpf" Version="3.1.2" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.6" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="NewFolder\Arcanum Icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="NewFolder\delta.png" />
+    <Resource Include="NewFolder\home-button_9073243.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="NewFolder\play_10238942.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="NewFolder\serial.png" />
+    <Resource Include="NewFolder\x.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="NewFolder\Logo_maker_project__3_-removebg-preview.png" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,415 @@
+﻿<Window x:Class="modernuitest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ports="clr-namespace:System.IO.Ports;assembly=System"
+        xmlns:ui="clr-namespace:ModernWpf.Controls;assembly=ModernWpf.Controls"
+        xmlns:H="http://helix-toolkit.org/wpf"
+        Title="Hybrid UI"
+        Width="1280"
+        Height="720"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
+    <Window.Resources>
+        <ObjectDataProvider ObjectType="{x:Type ports:SerialPort}" MethodName="GetPortNames" x:Key="portNames"/>
+        
+        <SolidColorBrush x:Key="DarkGrayBrush" Color="#222021"/>
+        <Style x:Key="RCtxtbx" TargetType="TextBox">
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="17"/>
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".3*"/>
+            <ColumnDefinition Width=".3*"/>
+            <ColumnDefinition Width=".3*"/>
+            <ColumnDefinition Width=".3*"/>
+            <ColumnDefinition Width=".3*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.ColumnSpan="4" Background="#222021">
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="com_select" ItemsSource="{Binding Source={StaticResource portNames}}" Background="Gray" Height="70" Width="220" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="White" SelectionChanged="com_select_SelectionChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" >
+                </ComboBox>
+                <ComboBox x:Name="Dev_sel" Background="Gray" Height="70" Width="220" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="White" SelectionChanged="Dev_sel_SelectionChanged" SelectedIndex="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15">
+                    <ComboBoxItem Content="Delta Robot"/>
+                    <ComboBoxItem Content="4Dof Serial"/>
+                </ComboBox>
+
+                <Button x:Name="SimBtn" Width="100" Height="100" Click="SimBtn_Click">
+                    <DockPanel >
+                        <Image DockPanel.Dock="Top" Height="50" Width="40" Source="/newFolder/play_10238942.png" />
+                        <TextBlock Foreground="Gray" FontWeight="Bold" Text=" Simulate" DockPanel.Dock="Bottom"></TextBlock>
+                    </DockPanel>
+                </Button>
+                <Button x:Name="HomeBtn" Width="100" Height="100" Click="HomeBtn_Click">
+                    <DockPanel>
+                        <Image DockPanel.Dock="Top" Height="50" Width="40" Source="/newFolder/home-button_9073243.png" />
+                        <TextBlock Foreground="Gray" FontWeight="Bold" Text=" Home" DockPanel.Dock="Bottom"></TextBlock>
+                    </DockPanel>
+                </Button>
+                <Button x:Name="RUN" Width="100" Height="100" Click="RUN_Click">
+                    <DockPanel>
+                        <Image DockPanel.Dock="Top" Height="50" Width="40" Source="/newFolder/x.png"/>
+                        <TextBlock HorizontalAlignment="Center" Foreground="Gray" FontWeight="Bold" Text="Run" DockPanel.Dock="Bottom"></TextBlock>
+
+                    </DockPanel>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+
+        <StackPanel Grid.Column="5" Background="#222021" Orientation="Vertical" >
+            <ToggleButton x:Name="HideModel" Background="#222021" Width="120" Height="30" HorizontalAlignment="Right" Content="Hide Model" Foreground="Gray" Click="HideModel_Click" />
+            <ToggleButton x:Name="ShowVector" Background="#222021" Width="120" Height="30" HorizontalAlignment="Right" Content="Show Vectors" Foreground="Gray" Click="ShowVector_Click"/>
+
+        </StackPanel>
+
+        <H:HelixViewport3D Grid.Row="1"
+                   Grid.Column="0"
+                   Grid.RowSpan="9"
+                   Grid.ColumnSpan="5"
+                   
+                   Name="viewPort3d" 
+                   IsManipulationEnabled="True" 
+                   ShowCoordinateSystem="True"
+                   ViewCubeVerticalPosition="Top"
+                   CoordinateSystemVerticalPosition="Bottom"
+                   CoordinateSystemHorizontalPosition="Right"
+                           ShowCameraInfo="True"
+                   >
+
+
+            <H:HelixViewport3D.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#000428" Offset="0"/>
+                    <GradientStop Color="#004e92" Offset="1"/>
+                </LinearGradientBrush>
+
+            </H:HelixViewport3D.Background>
+
+
+            <H:GridLinesVisual3D Width="20000" 
+                         Length="20000" 
+                         Thickness="1.5" 
+                         MinorDistance="100" 
+                         MajorDistance="400" 
+                         Fill="#222021" 
+                         Center="0,0,-450"
+                         
+                         />
+
+            <H:SunLight/>
+
+        </H:HelixViewport3D>
+        <Border  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="5" Background="#222021"  BorderBrush="White" BorderThickness="2">
+            <Menu>
+                <MenuItem x:Name="RoboDesc_Btn"  Header="Robot Description" FontWeight="UltraBold" Foreground="Gray"  Click="RoboDesc_Btn_Click" />
+                <MenuItem x:Name="InvKin_Btn" Header="INVERSE Kinematics" FontWeight="UltraBold" Foreground="Gray"  Click="InvKin_Btn_Click"  BorderBrush="White" BorderThickness="1"/>
+                <MenuItem Header="FORWARD Kinematics"  FontWeight="UltraBold" Foreground="Gray"  BorderBrush="White" BorderThickness="1"/>
+                <MenuItem Header="Work Volume" FontWeight="UltraBold" Foreground="Gray"  BorderBrush="White" BorderThickness="1"/>
+                <MenuItem x:Name="RobC_Btn" Header="Robot Control" FontWeight="UltraBold" Foreground="Gray"  BorderBrush="White" BorderThickness="1" Click="RobC_Win"/>
+                <MenuItem x:Name="Traj_Btn" Header="Trajectory" FontWeight="UltraBold" Foreground="Gray" Click="Traj_Click"/>
+            </Menu>
+        </Border>
+
+        <Border x:Name="RobotControlWindow" Visibility="Collapsed" Grid.Row="2" Grid.RowSpan="6" Grid.Column="0" Grid.ColumnSpan="1" Background="#222021" CornerRadius="10" BorderBrush="Black" BorderThickness="3">
+            <StackPanel Orientation="Vertical">
+                <Border Margin="20" BorderBrush="White" Background="DarkSeaGreen" CornerRadius="10" BorderThickness="2">
+                    <Label Content="Joint Space Control" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontStyle="Italic" FontWeight="Bold"/>
+                </Border>
+                <Border Margin="2" BorderBrush="Gray"  CornerRadius="10" BorderThickness="2">
+                    <StackPanel> 
+                    <StackPanel Margin="5" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                        <Label Content="J1" FontSize="20" FontWeight="Bold" Foreground="White" Width="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                        <Slider x:Name="J1_Sldr" Grid.Row="1" Minimum="0" Maximum="90" Width="172" TickFrequency=".5" Value="0" IsSnapToTickEnabled="True" ValueChanged="J1_Sldr_ValueChanged">
+                            <Slider.Resources>
+                                <SolidColorBrush x:Key="SliderTrackValueFill" Color="#4ADEDE"/>
+                            </Slider.Resources>
+                        </Slider>
+
+                        <Button Content="-" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                        <TextBox x:Name="J1tb" Text="" Style="{StaticResource RCtxtbx}"/>
+
+                        <Button Content="+" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+                    </StackPanel>
+
+                        <StackPanel Margin="5" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+
+                        <Label Content="J2" FontSize="20" FontWeight="Bold" Foreground="White" Width="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                            <Slider x:Name="J2_Sldr" Grid.Row="1" Minimum="0" Maximum="90" Width="172" TickFrequency=".5" Value="0" IsSnapToTickEnabled="True" ValueChanged="J2_Sldr_ValueChanged">
+                            <Slider.Resources>
+                                <SolidColorBrush x:Key="SliderTrackValueFill" Color="#4ADEDE"/>
+                            </Slider.Resources>
+                        </Slider>
+
+                        <Button Content="-" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                        <TextBox x:Name="J2tb" Text="" Style="{StaticResource RCtxtbx}"/>
+
+                        <Button Content="+" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                    </StackPanel>
+
+                    <StackPanel Margin="5" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+
+                        <Label Content="J3" FontSize="20" FontWeight="Bold" Foreground="White" Width="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                            <Slider x:Name="J3_Sldr" Grid.Row="1" Minimum="0" Maximum="90" Width="172" TickFrequency=".5" Value="0" IsSnapToTickEnabled="True" ValueChanged="J3_Sldr_ValueChanged">
+                            <Slider.Resources>
+                                <SolidColorBrush x:Key="SliderTrackValueFill" Color="#4ADEDE"/>
+                            </Slider.Resources>
+                        </Slider>
+
+
+                        <Button Content="-" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                        <TextBox x:Name="J3tb" Text="" Style="{StaticResource RCtxtbx}"/>
+
+                        <Button Content="+" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+
+
+                    </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border  Margin="20,50,20,20" BorderBrush="White" Background="DarkSeaGreen" CornerRadius="10" BorderThickness="2" >
+                    <Label Content="Cartesian Space Control" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontStyle="Italic" FontWeight="Bold"/>
+                </Border>
+
+                <Border Margin="2" BorderBrush="Gray"  CornerRadius="10" BorderThickness="2">
+                    <StackPanel Orientation="Vertical">
+                        
+                <StackPanel Margin="5" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="X" FontSize="20" FontWeight="Bold" Foreground="White" Width="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                            <Slider x:Name="X_Sldr" Grid.Row="1" Minimum="-100" Maximum="100" Width="172" TickFrequency=".5" Value="0" IsSnapToTickEnabled="True" ValueChanged="X_Sldr_ValueChanged">
+                        <Slider.Resources>
+                            <SolidColorBrush x:Key="SliderTrackValueFill" Color="Orange"/>
+                        </Slider.Resources>
+                    </Slider>
+
+                    <Button Content="-" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                    <TextBox x:Name="Xtb" Text="" Style="{StaticResource RCtxtbx}"/>
+
+                    <Button Content="+" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+
+
+                </StackPanel>
+                        <StackPanel Margin="5" Grid.Row="7" Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <Label Content="Y" FontSize="20" FontWeight="Bold" Foreground="White" Width="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                            <Slider x:Name="Y_Sldr" Grid.Row="1" Minimum="-100" Maximum="100" Width="172" TickFrequency=".5" Value="0" IsSnapToTickEnabled="True" ValueChanged="Y_Sldr_ValueChanged">
+                        <Slider.Resources>
+                            <SolidColorBrush x:Key="SliderTrackValueFill" Color="Orange"/>
+                        </Slider.Resources>
+                    </Slider>
+
+
+                    <Button Content="-" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                    <TextBox x:Name="Ytb" Text="" Style="{StaticResource RCtxtbx}"/>
+
+                    <Button Content="+" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+
+
+                </StackPanel>
+                        <StackPanel Margin="5" Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <Label Content="Z" FontSize="20" FontWeight="Bold" Foreground="White" Width="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                            <Slider x:Name="Z_Sldr" Grid.Row="1" Minimum="-450" Maximum="-215" Width="172" TickFrequency=".5" Value="-300" IsSnapToTickEnabled="True" ValueChanged="Z_Sldr_ValueChanged">
+                        <Slider.Resources>
+                            <SolidColorBrush x:Key="SliderTrackValueFill" Color="Orange"/>
+                        </Slider.Resources>
+                    </Slider>
+
+
+                    <Button Content="-" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                    <TextBox x:Name="Ztb" Text="" Style="{StaticResource RCtxtbx}"/>
+
+                        <Button Content="+" Foreground="White" Padding="0" FontSize="15" FontWeight="ExtraBold" BorderBrush="White" Width="20" Height="23" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="Transparent" />
+
+                    </StackPanel>
+                    </StackPanel>
+                </Border>
+
+
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="InvKinWin"  Background="#222021" Visibility="Collapsed" Grid.Column="0" Grid.Row="3" Grid.RowSpan="5" CornerRadius="20">
+            <StackPanel >
+                <Border Margin="10" BorderBrush="White" Background="DarkSeaGreen" CornerRadius="10" BorderThickness="2">
+                    <Label  Content="  Inverse Kinematics" Foreground="White" FontSize="20" FontWeight="Bold" Opacity=".8" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Border>
+                <TextBlock Margin="20,5,20,0" Text="Choose a Plane:" Foreground="White" FontSize="15" FontWeight="Bold"/>
+                <Separator Margin="15,2"/>
+                <Border Margin="10,5" BorderBrush="White" CornerRadius="10" BorderThickness="2">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+
+                     
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="Robo_Desc" Background="#222021" Visibility="Collapsed"   Grid.Column="0" Grid.Row="3" Grid.RowSpan="5" CornerRadius="10" BorderBrush="Black" BorderThickness="2">
+            <StackPanel >
+                <Border Margin="10" BorderBrush="White" Background="DarkSeaGreen" CornerRadius="10" BorderThickness="2">
+                    <Label  Content="  Robot Description" Foreground="White" FontSize="20" FontWeight="Bold" Opacity=".8" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Border>
+                <TextBlock x:Name="dim" Margin="20,5,20,0" Text="BASE Dimensions:" Foreground="White" FontSize="15" FontWeight="Bold"/>
+                <Separator Margin="15,2"/>
+                <Border Margin="10,5" BorderBrush="White" CornerRadius="10" BorderThickness="2">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        
+                        <StackPanel Orientation="Horizontal">
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Name" Foreground="White" Margin="17,0"/>
+                            <TextBlock Text="color" Foreground="White" Margin="8,0"/>
+                            <TextBlock Text="vector" Foreground="White" Margin="35,0"/>
+                            <TextBlock Text="len(mm)" Foreground="White" Margin="15,0"/>
+                        </StackPanel>
+                        <RibbonSeparator/>
+
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="t1" Text="Wₘ₁" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="DemiBold" Opacity=".8" Padding="15"/>
+                            <Rectangle x:Name="v1" Width="40" Height="5" Fill="yellow" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock  Text="[0 -1 0]ᵀ" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="25,0"/>
+                            <TextBlock x:Name="w1" Foreground="White" FontSize="16" Margin="10,0" Text="103.32" Padding="5" VerticalAlignment="Center"/>
+
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="t2" Text="Wₘ₂" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="DemiBold" Opacity=".8" Padding="15"/>
+                            <Rectangle  x:Name="v2" Width="40" Height="5" Fill="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Text="[√3/2 1/2 0]ᵀ" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="10,0"/>
+                            <TextBlock x:Name="w2" Foreground="White" FontSize="16" Margin="8,0" Text="103.32" VerticalAlignment="Center"/>
+
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="t3" Text="Wₘ₃" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="DemiBold" Opacity=".8" Padding="15"/>
+                            <Rectangle  x:Name="v3" Width="40" Height="5" Fill="Purple" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Text="[-√3/2 1/2 0]ᵀ" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="10,0"/>
+                            <TextBlock x:Name="w3" Foreground="White" FontSize="16" Margin="2,0" Text="103.32" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="15,0" x:Name="SL" Text="Side Length(sb)" Foreground="White" FontSize="16" FontWeight="DemiBold" Opacity=".8"/>
+                            <TextBlock x:Name="len" Foreground="White" FontSize="16" Margin="80,0" Text="103.32" VerticalAlignment="Top"/>
+                        </StackPanel>
+                        <DockPanel>
+                            <Button  x:Name="Next" Margin="10,15" DockPanel.Dock="Right" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Next" FontWeight="UltraBold" Foreground="Gray" BorderBrush="White" Click="Next_Click"/>
+                            <Button x:Name="Prev" Margin="10" DockPanel.Dock="Left" Visibility="Collapsed" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Prev" FontWeight="UltraBold" Foreground="Gray" BorderBrush="White" Click="Prev_Click"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="Traj_Win" Visibility="Collapsed" Grid.Row="2" Grid.RowSpan="6" Grid.Column="0" Grid.ColumnSpan="1" Background="#222021" CornerRadius="10" BorderBrush="Black" BorderThickness="3">
+            <StackPanel Orientation="Vertical">
+                <Border Margin="20" BorderBrush="White" Background="DarkSeaGreen" CornerRadius="10" BorderThickness="2">
+                    <Label Content="Circle" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontStyle="Italic" FontWeight="Bold"/>
+                </Border>
+                <Border Margin="5,0,5,0" BorderBrush="Gray"  CornerRadius="10" BorderThickness="2">
+
+                    <StackPanel>
+                        <StackPanel Margin="5" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                            <Label Content="Center Coordinate :" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                            <TextBox x:Name="c_x" Style="{StaticResource RCtxtbx}"  Margin="10,0,0,0" VerticalAlignment="Center"/>
+
+                            <TextBox x:Name="c_y" Text="" Style="{StaticResource RCtxtbx}"  Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="5" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+
+                            <Label  Content="Radius :" FontSize="20" FontWeight="Bold" Foreground="White"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="109,0,0,0"/>
+
+                            <TextBox x:Name="radius" Text="" Style="{StaticResource RCtxtbx}" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="5,0,0,0" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+
+                            <Label Content="No.of Loops :" FontSize="20" FontWeight="Bold" Foreground="White"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="58,0,0,0"/>
+
+                            <TextBox x:Name="cnol" Text="" Style="{StaticResource RCtxtbx}" Margin="10,0,0,0"/>
+                         
+                        </StackPanel>
+                        <Button x:Name="circ_run" Width="80" Height="25" HorizontalAlignment="Right" Margin="0,20,10,10" Background="Gray" Content="Run Path" FontSize="9" FontWeight="Bold" Foreground="White" Click="circ_run_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <Border  Margin="20,20,20,20" BorderBrush="White" Background="DarkSeaGreen" CornerRadius="10" BorderThickness="2" >
+                    <Label Content="Square :" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontStyle="Italic" FontWeight="Bold"/>
+                </Border>
+
+                <Border Margin="5,0,5,0" BorderBrush="Gray" CornerRadius="10" BorderThickness="2">
+                    <StackPanel Orientation="Vertical">
+
+                        <StackPanel Margin="5" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Label Content="Side Length :" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="40,0,0,0"/>
+                            <TextBox Text="" Style="{StaticResource RCtxtbx}" Margin="10,0,0,0"/>
+
+                        </StackPanel>
+                        <StackPanel Margin="5" Grid.Row="7" Orientation="Horizontal" VerticalAlignment="Center">
+
+                            <Label Content="Corner :" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="87,0,0,0"/>
+
+                            <TextBox Text="" Style="{StaticResource RCtxtbx}" Margin="10,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="5,0,0,10" Orientation="Horizontal" VerticalAlignment="Center" >
+
+                            <Label Content="No.of Loops :" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="36,0,0,0"/>
+
+                            <TextBox Text="" Style="{StaticResource RCtxtbx}" Margin="10,0,0,0"/>
+                        </StackPanel>
+                        <Button x:Name="sqr_run" Width="80" Height="25" HorizontalAlignment="Right"  Background="Gray" Content="Run Path" FontSize="9" FontWeight="Bold" Foreground="White" Margin="0,0,10,10" />
+                    </StackPanel>
+                </Border>
+
+
+            </StackPanel>
+        </Border>
+
+
+
+    </Grid>
+</Window>
